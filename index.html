@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aether Weather</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-orbs" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <main class="app" role="main">
+      <header class="app__header">
+        <div class="logo">
+          <span class="logo__icon">☁</span>
+          <span class="logo__text">Aether</span>
+        </div>
+        <p class="app__tagline">Real-time weather, beautifully rendered.</p>
+      </header>
+
+      <section class="search-section" aria-label="City search">
+        <div class="search-box">
+          <label for="city-input" class="visually-hidden"
+            >Enter city name</label
+          >
+          <input
+            id="city-input"
+            class="search-box__input"
+            type="text"
+            placeholder="Search any city…"
+            autocomplete="off"
+            aria-label="City name"
+          />
+          <button
+            id="search-btn"
+            class="search-box__btn"
+            aria-label="Fetch weather"
+          >
+            <svg
+              class="btn-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span class="btn-label">Search</span>
+          </button>
+        </div>
+      </section>
+
+      <div
+        id="loading"
+        class="state-loading"
+        aria-live="polite"
+        aria-label="Loading weather data"
+        hidden
+      >
+        <div class="spinner">
+          <div class="spinner__ring"></div>
+          <div class="spinner__ring spinner__ring--delay"></div>
+        </div>
+        <p class="state-loading__text">Fetching atmosphere…</p>
+      </div>
+
+      <div id="error-box" class="state-error" role="alert" hidden>
+        <span class="state-error__icon">⚠</span>
+        <p id="error-msg" class="state-error__msg">Something went wrong.</p>
+      </div>
+
+      <article id="weather-card" class="weather-card" aria-live="polite" hidden>
+        <div class="weather-card__top">
+          <div>
+            <h1 id="city-name" class="weather-card__city"></h1>
+            <p id="country" class="weather-card__country"></p>
+          </div>
+          <time id="date-time" class="weather-card__date"></time>
+        </div>
+
+        <div class="weather-card__divider"></div>
+
+        <div class="weather-card__hero">
+          <div class="weather-card__icon-wrap">
+            <img id="weather-icon" class="weather-card__icon" src="" alt="" />
+            <div class="weather-card__icon-glow"></div>
+          </div>
+
+          <div class="weather-card__temp-block">
+            <span id="temperature" class="weather-card__temp"></span>
+            <div
+              class="weather-card__unit-toggle"
+              role="group"
+              aria-label="Temperature unit"
+            >
+              <button
+                class="unit-btn unit-btn--active"
+                data-unit="C"
+                id="btn-c"
+              >
+                &deg;C
+              </button>
+              <span class="unit-divider">/</span>
+              <button class="unit-btn" data-unit="F" id="btn-f">&deg;F</button>
+            </div>
+          </div>
+
+          <p id="description" class="weather-card__desc"></p>
+        </div>
+
+        <div class="weather-card__stats" role="list">
+          <div class="stat" role="listitem">
+            <svg
+              class="stat__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            <div class="stat__info">
+              <span class="stat__label">Feels like</span>
+              <span id="feels-like" class="stat__value"></span>
+            </div>
+          </div>
+          <div class="stat" role="listitem">
+            <svg
+              class="stat__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path d="M12 2v20M2 12h20" />
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+                opacity=".3"
+              />
+              <path d="M12 8a4 4 0 0 1 4 4" stroke-linecap="round" />
+            </svg>
+            <div class="stat__info">
+              <span class="stat__label">Humidity</span>
+              <span id="humidity" class="stat__value"></span>
+            </div>
+          </div>
+          <div class="stat" role="listitem">
+            <svg
+              class="stat__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path
+                d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="stat__info">
+              <span class="stat__label">Wind</span>
+              <span id="wind-speed" class="stat__value"></span>
+            </div>
+          </div>
+          <div class="stat" role="listitem">
+            <svg
+              class="stat__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="stat__info">
+              <span class="stat__label">Visibility</span>
+              <span id="visibility" class="stat__value"></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div id="prompt-hint" class="prompt-hint">
+        <p>Type a city above and press <kbd>Enter</kbd> or click Search.</p>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      Powered by
+      <a href="https://open-meteo.com/" target="_blank" rel="noopener"
+        >Open-Meteo</a
+      >
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
